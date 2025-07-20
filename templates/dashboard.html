@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4 pb-3 shadow-sm border-bottom">
+  
+  <div class="d-flex align-items-center">
+    <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" width="50" height="50" class="me-2">
+    <h3 class="mb-0">Shortify</h3>
+  </div>
+
+
+  <div class="d-flex align-items-center">
+    <a href="{{ url_for('home') }}" class="btn btn-outline-secondary me-3">Home</a>
+
+    <span id="theme-icon" class="me-2 align-middle">🌙</span>
+    <label class="switch mb-0">
+      <input type="checkbox" id="darkModeToggle" />
+      <span class="slider round"></span>
+    </label>
+  </div>
+</div>
+
+
+<div class="px-3 px-md-5"> 
+  <h2 class="mb-4">Dashboard</h2>
+
+  
+
+  <h4 class="mt-5">Your Shortened URLs</h4>
+  <div class="dashboard-container">
+    <div class="table-scroll">
+      <table class="table table-striped theme-table">
+        <thead>
+          <tr>
+            <th scope="col">Original URL</th>
+            <th scope="col">Short URL</th>
+            <th scope="col">Clicks</th>
+            <th scope="col">QR Code</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for url in urls %}
+          <tr>
+            <td><a href="{{ url.original_url }}" target="_blank">{{ url.original_url }}</a></td>
+            <td><a href="{{ request.host_url }}{{ url.short_id }}" target="_blank">{{ request.host_url }}{{ url.short_id }}</a></td>
+            <td>{{ url.clicks }}</td>
+            <td>
+              <div class="btn-group d-flex flex-column gap-1">
+                <a href="{{ url_for('generate_qr', short_id=url.short_id) }}" class="btn btn-sm btn-outline-secondary" target="_blank">
+                  <i class="bi bi-eye"></i>
+                </a>
+                <a href="{{ url_for('generate_qr', short_id=url.short_id) }}?download=1" class="btn btn-sm btn-outline-success">
+                  <i class="bi bi-download"></i>
+                </a>
+                <button class="btn btn-sm btn-outline-primary" onclick="copyToClipboard('{{ request.host_url }}{{ url.short_id }}')">
+                  <i class="bi bi-clipboard"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
